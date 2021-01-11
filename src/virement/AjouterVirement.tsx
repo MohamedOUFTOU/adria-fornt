@@ -378,7 +378,7 @@ const AjouterVirment = () => {
     );
     return (
         <Fragment>
-            {token ? null : <Redirect to="/auth"/>}
+            <!-- {token ? null : <Redirect to="/auth"/>} -->
             <h1>Virement</h1>
             <Row className="mt-4">
                 <Col>

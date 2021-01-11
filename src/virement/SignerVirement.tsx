@@ -91,7 +91,7 @@ const SignerVirement = () => {
     }
     return (
         <Fragment>
-            {token ? null : <Redirect to="/auth"/>}
+            <!-- {token ? null : <Redirect to="/auth"/>} -->
             <Row>
                 <Col className="col-6 mx-auto mt-5">
                     {error !== '' ? <Alert className='mt-2' variant="danger">{error}</Alert> : null}
