@@ -181,9 +181,12 @@ const VirementList = () => {
     useEffect(() => {
         loadComptes()
     }, []);
+
     return (
         <Fragment>
-            <!-- {token ? null : <Redirect to="/auth"/>} -->
+
+            {/*{token ? null : <Redirect to="/auth"/>}*/}
+
             <Row className="mt-4">
                 <Col md={{span: 6, offset: 3}}>
                     <FilteringForm comptes={state.comptes} onChangeCompte={(onChangeCompte)}

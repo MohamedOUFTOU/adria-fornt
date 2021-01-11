@@ -29,7 +29,8 @@ const Auth = (props: any) => {
     return (
         <div>
             <Row className="justify-content-md-center mt-4">
-                <!-- {token ? <Redirect to="/list-virements"/> : null} -->
+                {/*{token ? <Redirect to="/list-virements"/> : null}*/}
+
                 <Col xl={6} md={8} sm={10}>
                     <h2 className="mb-4">Login</h2>
                     {
