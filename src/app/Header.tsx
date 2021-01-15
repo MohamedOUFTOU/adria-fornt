@@ -13,13 +13,38 @@ const Header = (props: any) => {
     const dispatch = useDispatch();
     const history = useHistory();
     let navs = null;
+    navs =
+        <Fragment>
+            <Nav.Link
+                onClick={() => {
+                    history.push('/ajouter-virement')
+                }}>
+                Ajouter Virement
+            </Nav.Link>
+
+            <Nav.Link
+                onClick={() => {
+                    history.push('/verification')
+                }}>
+                Signer Virement
+            </Nav.Link>
+
+            <Nav.Link onClick={() => {
+                history.push('/list-virements')
+            }}>
+                List Virements
+            </Nav.Link>
+
+        </Fragment>
+    
     if (token) {
-        navs = <Fragment><Nav.Link
-            onClick={() => {
-                history.push('/ajouter-virement')
-            }}>Ajouter Virement</Nav.Link> <Nav.Link onClick={() => {
-            history.push('/list-virements')
-        }}>List Virements</Nav.Link></Fragment>
+        // navs = <Fragment><Nav.Link
+        //     onClick={() => {
+        //         history.push('/ajouter-virement')
+        //     }}>Ajouter Virement</Nav.Link> <Nav.Link onClick={() => {
+        //     history.push('/list-virements')
+        
+        // }}>List Virements</Nav.Link></Fragment>
     }
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
