@@ -1,11 +1,15 @@
-import React, {ChangeEvent, Fragment, useEffect, useState} from 'react';
-import {Alert, Button, Col, Form, FormControl, InputGroup, Row, Table} from "react-bootstrap";
-import {useForm} from "react-hook-form";
+import React, { ChangeEvent, Fragment, useEffect, useState } from 'react';
+import { Alert, Button, Col, Container, Form, FormControl, InputGroup, Row, Table } from "react-bootstrap";
+import { useForm } from "react-hook-form";
 
 import http from '../app/Client'
-import {Redirect, useHistory, useLocation} from "react-router-dom";
-import {useSelector} from "react-redux";
-import {GlobalState} from "../app/types";
+import { Redirect, useHistory, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { GlobalState } from "../app/types";
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCalendarAlt, faCreditCard, faEye, faTrashAlt, faEdit } from '@fortawesome/free-regular-svg-icons';
+import { faDollarSign, faAdjust, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
 type Beneficiaire = {
     id: number,
@@ -30,30 +34,30 @@ type Compte = {
 
 export const ListBeneficiaires = (props: { beneficiaires: Beneficiaire[], addBeneficiaire: Function }) => {
     return (
-        <Table>
-            <thead>
-            <tr>
-                <th>Identifiant</th>
-                <th>Némero de compte</th>
-                <th></th>
-            </tr>
+        <Table bordered hover responsive>
+            <thead className="thead-dark">
+                <tr>
+                    <th>Identifiant</th>
+                    <th>Némero de compte</th>
+                    <th></th>
+                </tr>
             </thead>
             <tbody>
-            {
-                props.beneficiaires?.length ? props.beneficiaires?.map(beneficiaire => {
-                    return (
-                        <tr key={beneficiaire.id}>
-                            <td>{beneficiaire.id}</td>
-                            <td>{`${beneficiaire.numeroCompte} ${beneficiaire.nom.toUpperCase()} ${beneficiaire.prenom.toUpperCase()}`}</td>
-                            <td>
-                                <Button variant="success" size="sm"
+                {
+                    props.beneficiaires?.length ? props.beneficiaires?.map(beneficiaire => {
+                        return (
+                            <tr key={beneficiaire.id}>
+                                <td>{beneficiaire.id}</td>
+                                <td>{`${beneficiaire.numeroCompte} ${beneficiaire.nom.toUpperCase()} ${beneficiaire.prenom.toUpperCase()}`}</td>
+                                <td>
+                                    <Button variant="success" size="sm"
                                         onClick={() => props.addBeneficiaire(beneficiaire)}>+</Button>
-                            </td>
-                        </tr>)
-                }) : <tr>
-                    <td colSpan={3}>Vous n'avez aucun bénéficiaire</td>
-                </tr>
-            }
+                                </td>
+                            </tr>)
+                    }) : <tr>
+                            <td colSpan={3}>Vous n'avez aucun bénéficiaire</td>
+                        </tr>
+                }
 
             </tbody>
         </Table>
@@ -63,47 +67,47 @@ export const BeneficiairesVirement = (props: { selectedBeneficiaire: SelectedBen
     const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         props.changeBeneficiaireValuer(e.target.name, e.target.value)
     }
-    return <Table>
-        <thead>
-        <tr>
-            <th>Identifiant</th>
-            <th>Bénéficiaires</th>
-            <th>Montant</th>
-            <th></th>
-        </tr>
+    return <Table bordered hover responsive>
+        <thead className="thead-dark">
+            <tr>
+                <th>Identifiant</th>
+                <th>Bénéficiaires</th>
+                <th>Montant</th>
+                <th></th>
+            </tr>
         </thead>
         <tbody>
-        {
-            props.selectedBeneficiaire?.length ? props.selectedBeneficiaire.map(beneficiaire => {
-                return (
-                    <tr key={beneficiaire.id}>
-                        <td>{beneficiaire.id}</td>
-                        <td>{`${beneficiaire.nom?.toUpperCase()} ${beneficiaire.prenom?.toUpperCase()}`}</td>
-                        <td>
-                            <input style={{borderColor: beneficiaire.montant ? '' : 'red'}}
-                                   type="number" name={beneficiaire.id.toString()}
-                                   value={beneficiaire.montant}
-                                   onChange={changeHandler}/>
-                            {
-                                (beneficiaire.montant <= 0) ?
-                                    <Alert className='mt-2' variant="danger">Valeur doit être non nulle</Alert> : null
-                            }
+            {
+                props.selectedBeneficiaire?.length ? props.selectedBeneficiaire.map(beneficiaire => {
+                    return (
+                        <tr key={beneficiaire.id}>
+                            <td>{beneficiaire.id}</td>
+                            <td>{`${beneficiaire.nom?.toUpperCase()} ${beneficiaire.prenom?.toUpperCase()}`}</td>
+                            <td>
+                                <input style={{ borderColor: beneficiaire.montant ? '' : 'red' }}
+                                    type="number" name={beneficiaire.id.toString()}
+                                    value={beneficiaire.montant}
+                                    onChange={changeHandler} />
+                                {
+                                    (beneficiaire.montant <= 0) ?
+                                        <Alert className='mt-2' variant="danger">Valeur doit être non nulle</Alert> : null
+                                }
 
-                        </td>
-                        <td><Button variant="danger" size="sm"
-                                    onClick={() => props.removeBeneficiaire(beneficiaire.id)}>-</Button>
-                        </td>
-                    </tr>)
-            }) : <tr>
-                <td colSpan={4}>Veuillez sélectionner un bénéficiaire</td>
-            </tr>
-        }
+                            </td>
+                            <td><Button variant="danger" size="sm"
+                                onClick={() => props.removeBeneficiaire(beneficiaire.id)}>-</Button>
+                            </td>
+                        </tr>)
+                }) : <tr>
+                        <td colSpan={4}>Veuillez sélectionner un bénéficiaire</td>
+                    </tr>
+            }
         </tbody>
     </Table>
 }
 export const VirementForm = (props: any) => {
     const history = useHistory();
-    const {register, errors, handleSubmit} = useForm<any>();
+    const { register, errors, handleSubmit } = useForm<any>();
     const onSubmit = (data: any) => {
         let isValid = true;
         props.state.selectedBeneficiaire.forEach((e: SelectedBeneficiaire) => {
@@ -114,11 +118,11 @@ export const VirementForm = (props: any) => {
         if (isValid) {
             const url = props.state.updateMode ? 'modifier-virement/' + props.state.id : 'ajouter-virement';
             const submitForm =
-                {
-                    ...data,
-                    selectedBeneficiaire: props.state.selectedBeneficiaire
+            {
+                ...data,
+                selectedBeneficiaire: props.state.selectedBeneficiaire
 
-                }
+            }
             http.post(url, submitForm).then(response => {
                 const detail = {
                     id: response.data,
@@ -126,7 +130,7 @@ export const VirementForm = (props: any) => {
                 };
                 history.push({
                     pathname: '/verification',
-                    state: {detail}
+                    state: { detail }
                 });
             }).catch(error => {
                 console.log(error)
@@ -144,49 +148,64 @@ export const VirementForm = (props: any) => {
     }
     const display_date = new Date().toISOString().split('T')[0]
     return <Form onSubmit={handleSubmit(onSubmit)}>
-        <Row>
+        <Form.Row>
             <Col className="col-6">
                 <Form.Group controlId="select">
                     <Form.Label>Choisir un compte :</Form.Label>
-                    <Form.Control as="select"
-                                  defaultValue={props.state.updateMode ? props.state.comptes.filter((c: Compte) => c.numeroCompte === props.state.virement.accountNumber) : props.state.comptes[0]}
-                                  name="accountNumber" ref={register({
-                        required: true,
-                        validate: checkForBalance
-                    })}>
-                        {
-                            props.state.comptes.map((e: Compte) => {
-                                return <option key={e.id}
-                                               value={e.numeroCompte}>{e.numeroCompte + ' : (' + e.soldeComptable} DH)
+                    <InputGroup>
+                        <InputGroup.Prepend>
+                            <InputGroup.Text>
+                                <FontAwesomeIcon icon={faCreditCard} />
+                            </InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <Form.Control as="select"
+                            defaultValue={props.state.updateMode ? props.state.comptes.filter((c: Compte) => c.numeroCompte === props.state.virement.accountNumber) : props.state.comptes[0]}
+                            name="accountNumber" ref={register({
+                                required: true,
+                                validate: checkForBalance
+                            })}>
+                            {
+                                props.state.comptes.map((e: Compte) => {
+                                    return <option key={e.id}
+                                        value={e.numeroCompte}>{e.numeroCompte + ' : (' + e.soldeComptable} DH)
                                 </option>
-                            })
+                                })
+                            }
+                        </Form.Control>
+                        {
+                            (errors.accountNumber?.type === 'required') ?
+                                <Alert className='mt-2' variant="danger">{"Vous devez spécifier un compte"}</Alert> : null
                         }
-                    </Form.Control>
-                    {
-                        (errors.accountNumber?.type === 'required') ?
-                            <Alert className='mt-2' variant="danger">{"Vous devez spécifier un compte"}</Alert> : null
-                    }
-                    {
-                        (errors.accountNumber?.type === 'validate') ?
-                            <Alert className='mt-2'
-                                   variant="danger">{"Assurez-vous d'avoir suffisamment d'argent sur votre compte pour cette opération"}</Alert> : null
-                    }
+                        {
+                            (errors.accountNumber?.type === 'validate') ?
+                                <Alert className='mt-2'
+                                    variant="danger">{"Assurez-vous d'avoir suffisamment d'argent sur votre compte pour cette opération"}</Alert> : null
+                        }
+                    </InputGroup>
                 </Form.Group>
             </Col>
             <Col>
                 <Form.Group controlId="DateDeCreation">
                     <Form.Label>Date de création</Form.Label>
-                    <Form.Control type="text" name="createdDate"
-                                  ref={register({required: true})}
-                                  value={props.state.updateMode ? props.state.virement.createdDate.toString().split('T')[0] : display_date}
-                                  readOnly/>
+                    <InputGroup>
+                        <InputGroup.Prepend>
+                            <InputGroup.Text>
+                                <FontAwesomeIcon icon={faCalendarAlt} />
+                            </InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <Form.Control type="text" name="createdDate"
+                            ref={register({ required: true })}
+                            value={props.state.updateMode ? props.state.virement.createdDate.toString().split('T')[0] : display_date}
+                            readOnly />
+                    </InputGroup>
+
                 </Form.Group>
                 {
                     (errors.createdDate?.type === 'required') ?
                         <Alert className='mt-2' variant="danger">{"Error"}</Alert> : null
                 }
             </Col>
-        </Row>
+        </Form.Row>
         {/*<Row>*/}
         {/*    <Col>*/}
         {/*        <Form.Group controlId="DateDeExecution">*/}
@@ -202,13 +221,20 @@ export const VirementForm = (props: any) => {
         {/*        }*/}
         {/*    </Col>*/}
         {/*</Row>*/}
-        <Row>
+        <Form.Row>
             <Col>
                 <Form.Group controlId="motif">
                     <Form.Label>Motif</Form.Label>
-                    <Form.Control type="text" name="motif"
-                                  defaultValue={props.state.updateMode ? props.state.virement.motif : ''}
-                                  ref={register({required: true})}/>
+                    <InputGroup>
+                        <InputGroup.Prepend>
+                            <InputGroup.Text>
+                                <FontAwesomeIcon icon={faAdjust} />
+                            </InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <Form.Control type="text" name="motif"
+                            defaultValue={props.state.updateMode ? props.state.virement.motif : ''}
+                            ref={register({ required: true })} />
+                    </InputGroup>
                 </Form.Group>
                 {
                     (errors.motif?.type === 'required') ?
@@ -219,12 +245,20 @@ export const VirementForm = (props: any) => {
 
                 <Form.Group controlId="NombreDeBeneficiaires">
                     <Form.Label>Nombre de bénéficiaires</Form.Label>
-                    <Form.Control type="number" name="nbrOfBenf"
-                                  defaultValue={props.state.virement.nbrOfBenf}
-                                  ref={register({
-                                      required: true,
-                                      validate: (n: number) => +n === props.state.selectedBeneficiaire.length,
-                                  })}/>
+                    <InputGroup>
+                        <InputGroup.Prepend>
+                            <InputGroup.Text>
+                                <FontAwesomeIcon icon={faAdjust} />
+                            </InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <Form.Control type="number" name="nbrOfBenf"
+                            defaultValue={props.state.virement.nbrOfBenf}
+                            ref={register({
+                                required: true,
+                                validate: (n: number) => +n === props.state.selectedBeneficiaire.length,
+                            })} />
+                    </InputGroup>
+
                 </Form.Group>
                 {
                     (errors.nbrOfBenf?.type === 'validate') ?
@@ -241,6 +275,11 @@ export const VirementForm = (props: any) => {
                 <Form.Group controlId="Montant">
                     <Form.Label>Montant</Form.Label>
                     <InputGroup className="mb-3">
+                        <InputGroup.Prepend>
+                            <InputGroup.Text>
+                                <FontAwesomeIcon icon={faDollarSign} />
+                            </InputGroup.Text>
+                        </InputGroup.Prepend>
                         <FormControl
                             type="number" value={props.state.montant} name="montant"
                             ref={register({
@@ -258,12 +297,13 @@ export const VirementForm = (props: any) => {
                         <Alert className='mt-2' variant="danger">Vous devez choisir des bénéficiaires </Alert> : null
                 }
             </Col>
-        </Row>
-        <Row>
-            <Col>
-                <Button type="submit">{props.state.updateMode ? 'Update' : 'Save'}</Button>
-            </Col>
-        </Row>
+        </Form.Row>
+        <Form.Row>
+            <Form.Group as={Col} controlId="formSave">
+                <Button variant="warning" type="submit">{props.state.updateMode ? 'Modifier' : 'Enregistrer'}</Button>
+            </Form.Group>
+        </Form.Row>
+
     </Form>
 }
 
@@ -285,7 +325,7 @@ const AjouterVirment = () => {
             id: -1
         });
     useEffect(() => {
-        let data: any = {...location.state}
+        let data: any = { ...location.state }
 
         http.get('/abonnes/' + userId + '/beneficiaires').then(response => {
             console.log(response)
@@ -373,30 +413,36 @@ const AjouterVirment = () => {
         }
 
     }
-    const {userId, token} = useSelector(
+    const { userId, token } = useSelector(
         (state: GlobalState) => state.auth
     );
     return (
         <Fragment>
             {/*{token ? null : <Redirect to="/auth"/>}*/}
 
-            <h1>Virement</h1>
-            <Row className="mt-4">
-                <Col>
-                    <ListBeneficiaires beneficiaires={state.beneficiaire}
-                                       addBeneficiaire={addBeneficiaire}/>
-                </Col>
-                <Col>
-                    <BeneficiairesVirement selectedBeneficiaire={state.selectedBeneficiaire}
-                                           removeBeneficiaire={removeBeneficiaire}
-                                           changeBeneficiaireValuer={changeBeneficiaireValuer}/>
-                </Col>
-            </Row>
-            <Row className="m-auto">
-                <Col>
-                    <VirementForm state={state}/>
-                </Col>
-            </Row>
+            <Container className="mt-4">
+
+                <h5 className="title text-center mt-4"> <FontAwesomeIcon icon={faEdit} /> &nbsp;Création d'un virement</h5>
+                <br/>
+                <Row className="mt-6">
+                    <Col>
+                        <ListBeneficiaires beneficiaires={state.beneficiaire}
+                            addBeneficiaire={addBeneficiaire} />
+                    </Col>
+                    <Col>
+                        <BeneficiairesVirement selectedBeneficiaire={state.selectedBeneficiaire}
+                            removeBeneficiaire={removeBeneficiaire}
+                            changeBeneficiaireValuer={changeBeneficiaireValuer} />
+                    </Col>
+                </Row>
+                <Row className="mt-4">
+                    <Col>
+                        <VirementForm state={state} />
+                    </Col>
+                </Row>
+
+            </Container>
+
         </Fragment>
     );
 }
